@@ -10,27 +10,29 @@ function Gallery() {
   const [loading, setLoading] = useState(true); // State to manage loading state
 
   // Function to remove a tour by its ID
-  const removeTour = (id) => {
-    const newTours = tours.filter((tour) => tour.id !== id);
-    setTours(newTours);
+  const fetchTour = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://api.allorigins.win/raw?url=https://course-api.com/react-tours-project");
+      if (!response.ok) throw new Error("Network connection is not ok");
+      const data = await response.json();
+      setTours(data); // Set the fetched tours in state
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+    } finally {
+      setLoading(false); // Set loading to false after data is fetched
+    }
   };
 
-  // Fetch tour data from the API when the component mounts
+  // Fetch tour data from the API when the component mounts with useEffect
   useEffect(() => {
-    fetch("https://api.allorigins.win/raw?url=https://course-api.com/react-tours-project")
-      .then((response) => {
-        if (!response.ok) throw new Error("Network connection is not ok");
-        return response.json();
-})
-      .then((data) => {
-        setTours(data); // Set the fetched tours in state
-        setLoading(false); // Set loading to false after data is fetched
-      })
-      .catch((error) => {
-        console.error("Error fetching tours:", error);
-        setLoading(false); // Set loading to false in case of error
-      }); 
-  }, []);
+    fetchTour();
+  }
+  , []); // Empty dependency array to run only once on mount
+
+  const removeTour = (id) => {
+    const newTours = tours.filter((tour) => tour.id !== id); // Filter out the removed tour
+    setTours(newTours); 
 
   if (loading) {
     return <h2>Loading Next Travels...</h2>; // Show loading message while fetching data
@@ -38,8 +40,8 @@ function Gallery() {
   if (tours.length === 0) {
     return (
     <section>
-        <h2>No Tours Available</h2>; {/* Show message if no tours are available*/}
-        <button>refresh</button>
+        <h2>No Tours Available</h2> {/* Show message if no tours are available*/}
+        <button onClick={fetchTour}>Refresh</button>
     </section>
   );
   }
@@ -55,5 +57,5 @@ function Gallery() {
     </section>
   );
 }
-
+}
 export default Gallery;
