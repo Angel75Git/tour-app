@@ -1,4 +1,4 @@
-import React, { userState } from 'react';
+import React, { useState } from 'react';
 
 //Create a function to render tour cards 
 //Given id, name, info, image, price, and onRemove function as props
