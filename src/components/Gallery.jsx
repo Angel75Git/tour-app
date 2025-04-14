@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import TourCard from "./TourCard";
+import "../styles/styles.css"; 
 
 
 //on mount fetch data from https://course-api.com/react-tours-project with useeffect
@@ -13,7 +14,7 @@ function Gallery() {
   const fetchTour = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://api.allorigins.win/raw?url=https://course-api.com/react-tours-project");
+      const response = await fetch("https://course-api.com/react-tours-project"); //edit to add proxy server if it doesnt work
       if (!response.ok) throw new Error("Network connection is not ok");
       const data = await response.json();
       setTours(data); // Set the fetched tours in state
@@ -27,13 +28,12 @@ function Gallery() {
   // Fetch tour data from the API when the component mounts with useEffect
   useEffect(() => {
     fetchTour();
-  }
-  , []); // Empty dependency array to run only once on mount
+  }, []); // Empty dependency array to run only once on mount
 
   const removeTour = (id) => {
     const newTours = tours.filter((tour) => tour.id !== id); // Filter out the removed tour
     setTours(newTours); 
-
+  };
   if (loading) {
     return <h2>Loading Next Travels...</h2>; // Show loading message while fetching data
   }
@@ -57,5 +57,5 @@ function Gallery() {
     </section>
   );
 }
-}
+
 export default Gallery;
