@@ -9,10 +9,12 @@ import "../styles/styles.css";
 function Gallery() {
   const [tours, setTours] = useState([]); // State to hold the list of tours
   const [loading, setLoading] = useState(true); // State to manage loading state
+  const [error, setError] = useState(null); // State to manage error state
 
   // Function to remove a tour by its ID
   const fetchTour = async () => {
     setLoading(true);
+    setError(null); 
     try {
       const response = await fetch("https://course-api.com/react-tours-project"); //edit to add proxy server if it doesnt work
       if (!response.ok) throw new Error("Network connection is not ok");
@@ -35,7 +37,20 @@ function Gallery() {
     setTours(newTours); 
   };
   if (loading) {
-    return <h2>Loading Next Travels...</h2>; // Show loading message while fetching data
+    return (
+      <div className="loading-container">
+        <div className="spinner" />
+        <h2>Loading Next Travels...</h2> {/* Show loading message while fetching data*/}
+      </div>  
+      );
+  }
+  if (error) {
+    return (
+      <section className="error-message">
+        <h2>{error}</h2>
+        <button onClick={fetchTour}>Try Again</button>
+      </section>
+    );
   }
   if (tours.length === 0) {
     return (
